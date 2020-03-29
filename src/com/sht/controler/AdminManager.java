@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.sht.entity.Orders;
 import com.sht.dao.CommodityClassDao;
@@ -116,6 +113,7 @@ public class AdminManager {
 			page.setCurrentPage(curPage);
 		page.setTotalNum(commodityDao.numOfCommodities().intValue());
 		map.put("page", page);
+		map.put("adr", "commodities");
 
 		List<Commodity> commodities = adminService.getCommodities(page);
 		map.put("commodities", commodities);
@@ -136,47 +134,49 @@ public class AdminManager {
 	}
 
 	@RequestMapping(value = "/commodity/{id}", method = RequestMethod.GET)
-	public String commodity(@PathVariable("id") Long commodityId, Map<String, Object> map) {
-		Map<Long, String> clist = new HashMap<Long, String>();
-		List<CommodityClass> cc = commodityClassDao.getCommodityClasses();
-		for (CommodityClass c : cc) {
-			clist.put(c.getCommodityClassId(), c.getCommodityClassName());
-		}
-		map.put("clist", clist);
-
+	public String commodity(@RequestParam(value = "curPage", required = false) Integer curPage,
+			@PathVariable("id") Long commodityId, Map<String, Object> map) {
 		Commodity commodity = adminService.getCommodity(commodityId);
-		map.put("oldImage", commodity.getCommodityImage());
 		map.put("commodity", commodity);
 
-		return "commodity";
-	}
+		String commodityClassName = adminService.getCommodityClassName(commodityId);
+		map.put("commodityClassName", commodityClassName);
 
-	@RequestMapping(value = "/commodities", method = RequestMethod.POST)
-	public String saveOrUpdateCommodity(@RequestParam(value = "file") MultipartFile file,
-			@RequestParam(value = "oldImage") String oldImage, HttpServletRequest request, Commodity commodity) {
-		System.out.println(commodity);
-		if (file.getSize() != 0) {
-			ImageUtil.deleteFile(oldImage);
-			String path = ImageUtil.saveFile(file, request);
-			commodity.setCommodityImage(path);
+		String sellerName = adminService.getSellerName(commodityId);
+		map.put("sellerName", sellerName);
+
+		if (curPage != null)
+			page.setCurrentPage(curPage);
+		page.setTotalNum(commodityDao.numOfMessages(commodityId).intValue());
+		map.put("page", page);
+		map.put("adr", "admin/commodity/" + commodityId);
+		map.put("returnAdr","admin/commodities");
+
+		List<Message> messages = commodityDao.getMessages(commodityId, page);
+		map.put("messages", messages);
+
+		Map<Long, String> uMap = new HashMap<Long, String>();
+		for (Message m : messages) {
+			uMap.put(m.getUserId(), adminService.getBuyerName(m.getUserId()));
 		}
-		commodityDao.saveOrUpdate(commodity);
+		map.put("uMap", uMap);
 
-		return "redirect:/admin/commodities";
+		return "commodityInfo";
 	}
 
 	@RequestMapping("/commodities/search")
-	public String searchCommodities(@RequestParam(value = "content") String content,
+	public String searchCommodities(@RequestParam(value = "search") String search,
 			@RequestParam(value = "curPage", required = false) Integer curPage, Map<String, Object> map) {
 
 		if (curPage != null)
 			page.setCurrentPage(curPage);
-		content = content.trim();
-		page.setTotalNum(commodityDao.numOfCommodities(content).intValue());
-		List<Commodity> commodities = commodityDao.getCommodities(content, page);
+		search = search.trim();
+		page.setTotalNum(commodityDao.numOfCommodities(search).intValue());
+		List<Commodity> commodities = commodityDao.getCommodities(search, page);
 		map.put("commodities", commodities);
 		map.put("page", page);
-		map.put("content", content);
+		map.put("adr", "commodities/search");
+		map.put("search", search);
 
 		Map<Long, String> clist = new HashMap<Long, String>();
 		List<CommodityClass> cc = commodityClassDao.getCommodityClasses();
@@ -191,7 +191,7 @@ public class AdminManager {
 		}
 		map.put("ulist", ulist);
 
-		return "commoditiesSearch";
+		return "commodities";
 	}
 
 	@RequestMapping("/orders")

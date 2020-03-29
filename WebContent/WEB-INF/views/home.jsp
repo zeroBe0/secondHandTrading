@@ -48,16 +48,17 @@ table tr:nth-child(even) {
 	<a href="${pageContext.request.contextPath}/newCommodity">发布商品</a>
 	<br>
 	<c:forEach items="${clist }" var="cc">
-		<a
-			href="${pageContext.request.contextPath}/home/${cc.key}?curPage=1">${cc.value}</a>
+		<a href="${pageContext.request.contextPath}/home/${cc.key}?curPage=1">${cc.value}</a>
 	</c:forEach>
 
 	<form action="${pageContext.request.contextPath}/home/search"
 		method="get">
-		<input type="search" name="content"> <input type="hidden"
+		<input type="search" name="search"> <input type="hidden"
 			name="curPage" value="1"> <input type="submit" value="搜索">
 	</form>
-
+	<c:if test="${fn:length(search) > 0 }">
+	         搜索 “ ${search } ”的结果如下：
+	</c:if>
 
 	<c:if test="${empty commodities }">无商品信息</c:if>
 	<c:if test="${!empty commodities }">
@@ -81,8 +82,8 @@ table tr:nth-child(even) {
 						<th><form
 								action="${pageContext.request.contextPath}/home/commodity/${commodity.commodityId}"
 								method="get">
-								<input type="hidden" name="curPage" value="1">
-								<input type="submit" value="查看">
+								<input type="hidden" name="curPage" value="1"> <input
+									type="submit" value="查看">
 							</form></th>
 					</c:if>
 				</tr>
@@ -90,76 +91,39 @@ table tr:nth-child(even) {
 		</table>
 		<table>
 			<tr>
-				<c:if test="${empty CCid }">
-					<th scope="col">
-						<form method="get"
-							action="${pageContext.request.contextPath}/home">
-							<input type="hidden" name="curPage" value="1"> <input
-								type="submit" value="首页">
-						</form>
-
-					</th>
-					<th scope="col">
-						<form method="get"
-							action="${pageContext.request.contextPath}/home">
-							<input type="hidden" name="curPage" value="${page.prePage}">
-							<input type="submit" value="上一页">
-						</form>
-
-					</th>
-					<th>当前：第 ${page.currentPage}页,共${page.totalPage}页.</th>
-					<th scope="col">
-						<form method="get"
-							action="${pageContext.request.contextPath}/home">
-							<input type="hidden" name="curPage" value="${page.nextPage}">
-							<input type="submit" value="下一页">
-						</form>
-
-					</th>
-					<th scope="col">
-						<form method="get"
-							action="${pageContext.request.contextPath}/home">
-							<input type="hidden" name="curPage" value="${page.totalPage}">
-							<input type="submit" value="尾页">
-						</form>
-
-					</th>
-				</c:if>
-				<c:if test="${!empty CCid }">
-					<th scope="col">
-						<form method="get"
-							action="${pageContext.request.contextPath}/home/${CCid }">
-							<input type="hidden" name="curPage" value="1"> <input
-								type="submit" value="首页">
-						</form>
-
-					</th>
-					<th scope="col">
-						<form method="get"
-							action="${pageContext.request.contextPath}/home/${CCid }">
-							<input type="hidden" name="curPage" value="${page.prePage}">
-							<input type="submit" value="上一页">
-						</form>
-
-					</th>
-					<th>当前：第 ${page.currentPage}页,共${page.totalPage}页.</th>
-					<th scope="col">
-						<form method="get"
-							action="${pageContext.request.contextPath}/home/${CCid }">
-							<input type="hidden" name="curPage" value="${page.nextPage}">
-							<input type="submit" value="下一页">
-						</form>
-
-					</th>
-					<th scope="col">
-						<form method="get"
-							action="${pageContext.request.contextPath}/home/${CCid }">
-							<input type="hidden" name="curPage" value="${page.totalPage}">
-							<input type="submit" value="尾页">
-						</form>
-
-					</th>
-				</c:if>
+				<th scope="col">
+					<form method="get"
+						action="${pageContext.request.contextPath}/${adr }">
+						<input type="hidden" name="curPage" value="1"> <input
+							type="hidden" name="search" value="${search }"><input
+							type="submit" value="首页">
+					</form>
+				</th>
+				<th scope="col">
+					<form method="get"
+						action="${pageContext.request.contextPath}/${adr }">
+						<input type="hidden" name="curPage" value="${page.prePage}">
+						<input type="hidden" name="search" value="${search }"> <input
+							type="submit" value="上一页">
+					</form>
+				</th>
+				<th>当前：第 ${page.currentPage}页,共${page.totalPage}页.</th>
+				<th scope="col">
+					<form method="get"
+						action="${pageContext.request.contextPath}/${adr }">
+						<input type="hidden" name="curPage" value="${page.nextPage}">
+						<input type="hidden" name="search" value="${search }"> <input
+							type="submit" value="下一页">
+					</form>
+				</th>
+				<th scope="col">
+					<form method="get"
+						action="${pageContext.request.contextPath}/${adr }">
+						<input type="hidden" name="curPage" value="${page.totalPage}">
+						<input type="hidden" name="search" value="${search }"> <input
+							type="submit" value="尾页">
+					</form>
+				</th>
 			</tr>
 		</table>
 	</c:if>

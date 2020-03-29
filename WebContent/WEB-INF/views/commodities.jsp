@@ -40,21 +40,27 @@ table tr:nth-child(even) {
 <body>
 	<table>
 		<tr>
-			<td><a href="${pageContext.request.contextPath}/admin/users?curPage=1">用户信息</a></td>
+			<td><a
+				href="${pageContext.request.contextPath}/admin/users?curPage=1">用户信息</a></td>
 			<td><a
 				href="${pageContext.request.contextPath}/admin/commodityClasses?curPage=1">商品类别信息</a></td>
 			<td><h4>商品信息</h4></td>
-			<td><a href="${pageContext.request.contextPath}/admin/orders?curPage=1">订单信息</a></td>
-			<td><a href="${pageContext.request.contextPath}/admin/messages?curPage=1">留言信息</a></td>
+			<td><a
+				href="${pageContext.request.contextPath}/admin/orders?curPage=1">订单信息</a></td>
+			<td><a
+				href="${pageContext.request.contextPath}/admin/messages?curPage=1">留言信息</a></td>
 		</tr>
 	</table>
 
 	<form
 		action="${pageContext.request.contextPath}/admin/commodities/search"
 		method="get">
-		<input type="search" name="content"> <input type="hidden"
+		<input type="search" name="search"> <input type="hidden"
 			name="curPage" value="1"> <input type="submit" value="搜索">
 	</form>
+	<c:if test="${fn:length(search) > 0 }">
+	         搜索 “ ${search } ”的结果如下：
+	</c:if>
 
 
 	<c:if test="${empty commodities }">无商品信息</c:if>
@@ -84,7 +90,8 @@ table tr:nth-child(even) {
 					<th><form
 							action="${pageContext.request.contextPath}/admin/commodity/${commodity.commodityId}"
 							method="get">
-							<input type="submit" value="查看">
+							<input type="hidden" name="curPage" value="1"> <input
+								type="submit" value="查看">
 						</form></th>
 				</tr>
 			</c:forEach>
@@ -93,36 +100,36 @@ table tr:nth-child(even) {
 			<tr>
 				<th scope="col">
 					<form method="get"
-						action="${pageContext.request.contextPath}/admin/commodities">
-						<input type="hidden" name="curPage" value="1"> <input
+						action="${pageContext.request.contextPath}/admin/${adr }">
+						<input type="hidden" name="curPage" value="1"><input
+							type="hidden" name="search" value="${search }"> <input
 							type="submit" value="首页">
 					</form>
-
 				</th>
 				<th scope="col">
 					<form method="get"
-						action="${pageContext.request.contextPath}/admin/commodities">
-						<input type="hidden" name="curPage" value="${page.prePage}">
-						<input type="submit" value="上一页">
+						action="${pageContext.request.contextPath}/admin/${adr }">
+						<input type="hidden" name="curPage" value="${page.prePage}"><input
+							type="hidden" name="search" value="${search }"> <input
+							type="submit" value="上一页">
 					</form>
-
 				</th>
 				<th>当前：第 ${page.currentPage}页,共${page.totalPage}页.</th>
 				<th scope="col">
 					<form method="get"
-						action="${pageContext.request.contextPath}/admin/commodities">
-						<input type="hidden" name="curPage" value="${page.nextPage}">
-						<input type="submit" value="下一页">
+						action="${pageContext.request.contextPath}/admin/${adr }">
+						<input type="hidden" name="curPage" value="${page.nextPage}"><input
+							type="hidden" name="search" value="${search }"> <input
+							type="submit" value="下一页">
 					</form>
-
 				</th>
 				<th scope="col">
 					<form method="get"
-						action="${pageContext.request.contextPath}/admin/commodities">
-						<input type="hidden" name="curPage" value="${page.totalPage}">
-						<input type="submit" value="尾页">
+						action="${pageContext.request.contextPath}/admin/${adr }">
+						<input type="hidden" name="curPage" value="${page.totalPage}"><input
+							type="hidden" name="search" value="${search }"> <input
+							type="submit" value="尾页">
 					</form>
-
 				</th>
 			</tr>
 		</table>

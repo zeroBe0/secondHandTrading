@@ -131,6 +131,7 @@ public class UserManager {
 		List<Commodity> commodities = adminService.getCommodities(page);
 		map.put("commodities", commodities);
 		map.put("page", page);
+		map.put("adr", "home");
 
 		Map<Long, String> clist = new HashMap<Long, String>();
 		List<CommodityClass> cc = commodityClassDao.getCommodityClasses();
@@ -157,7 +158,7 @@ public class UserManager {
 		List<Commodity> commodities = commodityClassDao.getCommodities(id, page);
 		map.put("commodities", commodities);
 		map.put("page", page);
-		map.put("CCid", id);
+		map.put("adr", "home/" + id);
 
 		Map<Long, String> clist = new HashMap<Long, String>();
 		List<CommodityClass> cc = commodityClassDao.getCommodityClasses();
@@ -171,23 +172,23 @@ public class UserManager {
 			ulist.put(c.getUserId(), adminService.getBuyerName(c.getUserId()));
 		}
 		map.put("ulist", ulist);
-
 
 		return "home";
 	}
 
 	@RequestMapping("/home/search")
-	public String searchCommodities(@RequestParam(value = "content") String content,
+	public String searchCommodities(@RequestParam(value = "search") String search,
 			@RequestParam(value = "curPage", required = false) Integer curPage, Map<String, Object> map) {
 		if (curPage != null)
 			page.setCurrentPage(curPage);
 
-		content = content.trim();
-		page.setTotalNum(commodityDao.numOfCommodities(content).intValue());
-		List<Commodity> commodities = commodityDao.getCommodities(content, page);
+		search = search.trim();
+		page.setTotalNum(commodityDao.numOfCommodities(search).intValue());
+		List<Commodity> commodities = commodityDao.getCommodities(search, page);
 		map.put("commodities", commodities);
 		map.put("page", page);
-		map.put("content", content);
+		map.put("adr", "home/search");
+		map.put("search", search);
 
 		Map<Long, String> clist = new HashMap<Long, String>();
 		List<CommodityClass> cc = commodityClassDao.getCommodityClasses();
@@ -202,7 +203,7 @@ public class UserManager {
 		}
 		map.put("ulist", ulist);
 
-		return "searchCommodities";
+		return "home";
 	}
 
 	// 我的商品
@@ -306,9 +307,12 @@ public class UserManager {
 		if (curPage != null)
 			page.setCurrentPage(curPage);
 		page.setTotalNum(commodityDao.numOfMessages(commodityId).intValue());
+		map.put("page", page);
+		map.put("adr", "home/commodity/" + commodityId);
+		map.put("returnAdr","home");
+
 		List<Message> messages = commodityDao.getMessages(commodityId, page);
 		map.put("messages", messages);
-		map.put("page", page);
 
 		Map<Long, String> uMap = new HashMap<Long, String>();
 		for (Message m : messages) {
