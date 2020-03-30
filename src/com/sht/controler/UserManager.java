@@ -79,9 +79,12 @@ public class UserManager {
 	}
 
 	@RequestMapping(value = "/successR", method = RequestMethod.POST)
-	public String register(User user) {
+	public String register(User user, Map<String, Object> map) {
 		userDao.saveOrUpdate(user);
-		return "successRegister";
+		map.put("msg", "注册成功！！！");
+		map.put("msg1", "返回登录页面");
+		map.put("adr", "login");
+		return "success";
 	}
 
 	@ModelAttribute
@@ -276,7 +279,7 @@ public class UserManager {
 	@RequestMapping(value = "/successC", method = RequestMethod.POST)
 	public String saveOrUpdateCommodity(@RequestParam(value = "file") MultipartFile file,
 			@RequestParam(value = "oldImage") String oldImage, HttpServletRequest request, HttpSession session,
-			Commodity commodity) {
+			Commodity commodity, Map<String, Object> map) {
 		if (file.getSize() != 0) {
 			ImageUtil.deleteFile(oldImage);
 			String path = ImageUtil.saveFile(file, request);
@@ -287,6 +290,9 @@ public class UserManager {
 		}
 		commodityDao.saveOrUpdate(commodity);
 
+		map.put("msg", "操作成功！！！");
+		map.put("msg1", "返回首页");
+		map.put("adr", "home");
 		return "success";
 	}
 
@@ -309,7 +315,7 @@ public class UserManager {
 		page.setTotalNum(commodityDao.numOfMessages(commodityId).intValue());
 		map.put("page", page);
 		map.put("adr", "home/commodity/" + commodityId);
-		map.put("returnAdr","home");
+		map.put("returnAdr", "home");
 
 		List<Message> messages = commodityDao.getMessages(commodityId, page);
 		map.put("messages", messages);
@@ -353,7 +359,14 @@ public class UserManager {
 		ordersDao.getOrder(orderNo);
 		map.put("orderId", order.getOrderId());
 		System.out.println("orderId:" + order.getOrderId());
-		return "successBuy";
+		
+		map.put("msg", "操作成功！！！");
+		map.put("msg1", "返回首页");
+		map.put("adr", "home");
+		map.put("msg2", "查看我的订单");
+		map.put("adr1", "myOrders?curPage=1");
+		
+		return "success";
 	}
 
 	// 个人资料页面
@@ -366,8 +379,11 @@ public class UserManager {
 
 	// 个人资料修改成功页面
 	@RequestMapping(value = "/successU", method = RequestMethod.POST)
-	public String userInfo(User user) {
+	public String userInfo(User user, Map<String, Object> map) {
 		userDao.saveOrUpdate(user);
+		map.put("msg", "修改成功！！！");
+		map.put("msg1", "返回首页");
+		map.put("adr", "home");
 		return "success";
 	}
 
