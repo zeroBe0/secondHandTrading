@@ -47,7 +47,6 @@
 			</props>
 		</property>
 	</bean>
-
 	<!-- 配置 spring 的声明式事务 -->
 	<!-- 1.配置事务管理器 -->
 	<bean id="transactionManager"
